@@ -218,7 +218,7 @@
       <strong>Farouk Dafer Mohammed</strong><br>
       Adeem International Investment<br>
       <a href="mailto:farouk@adeeminvestmentkw.com">farouk@adeeminvestmentkw.com</a><br>
-      <a href="https://www.adeeminvestkw.com" target="_blank">www.adeeminvestkw.com</a></p>
+      <a href="https://adeeminvestmentkw.com" target="_blank">www.adeeminvestkw.com</a></p>
 
       <div class="cta">
         <a href="#contact">Submit Proposal</a>
@@ -227,40 +227,41 @@
   </div>
 
   <!-- Contact Form -->
-  <div class="contact-section" id="contact">
-    <h2>Submit Your Proposal</h2>
-    <p>Use the form below to reach our investment review team directly.</p>
+<div class="contact-section" id="contact">
+  <h2>Submit Your Proposal</h2>
+  <p>Use the form below to reach our investment and review team directly.</p>
 
-    <!-- Status Messages -->
-    <div id="form-status" class="form-status"></div>
+  <!-- Status Messages -->
+  <div id="form-status" class="form-status"></div>
 
-    <form id="proposal-form">
-      <input type="text" name="name" placeholder="Full Name" required>
-      <input type="email" name="email" placeholder="Email Address" required>
-      <input type="text" name="company" placeholder="Company/Organization">
-      <input type="tel" name="phone" placeholder="Phone Number">
-      <input type="text" name="project-name" placeholder="Project Name">
-      <select name="industry" required>
-        <option value="" disabled selected>Select Industry</option>
-        <option value="renewable-energy">Renewable Energy</option>
-        <option value="infrastructure">Infrastructure</option>
-        <option value="technology">Technology</option>
-        <option value="logistics">Logistics</option>
-        <option value="healthcare">Healthcare</option>
-        <option value="real-estate">Real Estate</option>
-        <option value="agriculture">Agriculture</option>
-        <option value="education">Education</option>
-        <option value="food-beverage">Food & Beverage</option>
-        <option value="mining">Mining</option>
-        <option value="aviation">Aviation</option>
-        <option value="aerospace">Aerospace</option>
-        <option value="oilfield-services">Oilfield Services</option>
-        <option value="other">Other</option>
-      </select>
-      <textarea name="message" rows="5" placeholder="Project Summary or Enquiry..." required></textarea>
-      <button type="submit">Send Proposal</button>
-    </form>
-  </div>
+  <form id="proposal-form" action="https://formspree.io/f/xdkzqqdn" method="POST">
+    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email Address" required>
+    <input type="text" name="company" placeholder="Company/Organization">
+    <input type="tel" name="phone" placeholder="Phone Number">
+    <input type="text" name="project-name" placeholder="Project Name">
+    <select name="industry" required>
+      <option value="" disabled selected>Select Industry</option>
+      <option value="renewable-energy">Renewable Energy</option>
+      <option value="infrastructure">Infrastructure</option>
+      <option value="technology">Technology</option>
+      <option value="logistics">Logistics</option>
+      <option value="healthcare">Healthcare</option>
+      <option value="real-estate">Real Estate</option>
+      <option value="agriculture">Agriculture</option>
+      <option value="education">Education</option>
+      <option value="food-beverage">Food & Beverage</option>
+      <option value="mining">Mining</option>
+      <option value="aviation">Aviation</option>
+      <option value="aerospace">Aerospace</option>
+      <option value="oilfield-services">Oilfield Services</option>
+      <option value="other">Other</option>
+    </select>
+    <textarea name="message" rows="5" placeholder="Project Summary or Enquiry..." required></textarea>
+    <button type="submit">Send Proposal</button>
+  </form>
+</div>
+
 
   <!-- Footer -->
   <div class="footer">
@@ -269,52 +270,36 @@
   </div>
 
   <script>
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
+const form = document.getElementById("proposal-form");
+const status = document.getElementById("form-status");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  status.textContent = "Sending... ⏳";
+  status.className = "form-status"; // Reset any existing styles
+
+  const data = new FormData(form);
+  try {
+    const response = await fetch(form.action, {
+      method: form.method,
+      body: data,
+      headers: { Accept: "application/json" },
     });
 
-    document.getElementById('proposal-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const form = this;
-    const statusElement = document.getElementById('form-status');
-    const submitButton = form.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton.textContent;
-    
-    // Show loading state
-    submitButton.textContent = 'Sending...';
-    submitButton.disabled = true;
-    statusElement.style.display = 'none';
-    
-    // Collect form data - FIXED TYPOS HERE
-    const formData = new FormData(form); // was "formData" (lowercase)
-    const data = Object.fromEntries(formData);
-
-    // In a real implementation, you would send this data to your server
-    // For now, we'll simulate an API call with a timeout
-    setTimeout(() => {
-        // Simulate successful submission
-        statusElement.textContent = 'Thank you! Your proposal has been submitted successfully. We will contact you shortly.';
-        statusElement.className = 'form-status success'; // was "from.status"
-        statusElement.style.display = 'block';
-        
-        // Reset form
-        form.reset();
-        
-        // Reset button
-        submitButton.textContent = originalButtonText;
-        submitButton.disabled = false;
-        
-        // Scroll to status message
-        statusElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 1500);
+    if (response.ok) {
+      status.textContent = "✅ Your proposal has been sent successfully!";
+      status.classList.add("success");
+      form.reset();
+    } else {
+      status.textContent = "❌ There was an issue submitting your proposal. Please try again.";
+      status.classList.add("error");
+    }
+  } catch (error) {
+    status.textContent = "⚠️ Network error — please check your connection.";
+    status.classList.add("error");
+  }
 });
-  </script>
+</script>
+
 </body>
 </html>
